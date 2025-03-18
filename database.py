@@ -33,11 +33,24 @@ def add_book(isbn, title, author, language, publication_year):
         finally:
             close_db(conn)
 
-def search_books(query):
+def search_books(query, publication_year=None, language=None):
     conn = connect_db()
     if conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Books WHERE Title LIKE ? OR Author LIKE ?", ('%' + query + '%', '%' + query + '%'))
+        sql = "SELECT * FROM Books WHERE (Title LIKE ? OR Author LIKE ?)"
+        params = ('%' + query + '%', '%' + query + '%')
+
+        if publication_year:
+            sql += " AND PublicationYear = ?"
+            params += (publication_year,)
+        if language:
+            sql += " AND Language = ?"
+            params += (language,)
+
+        print("SQL:", sql)  # Print the SQL query
+        print("Params:", params) # Print the parameters
+
+        cursor.execute(sql, params)
         books = cursor.fetchall()
         close_db(conn)
         return books
