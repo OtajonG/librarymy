@@ -35,11 +35,13 @@ def search_results():
     form = SearchBooksForm()
     if form.validate_on_submit():
         query = form.query.data
-        books = database.search_books(query)
+        publication_year = form.publication_year.data
+        language = form.language.data
+        print("Form Query:", query) # Added print statement
+        books = database.search_books(query, publication_year, language)
         return render_template('search_results.html', books=books, form=form)
     else:
-        return render_template('search_results.html', books=[], form=form) # added else statement.
-
+        return render_template('search_results.html', books=[], form=form)
 if __name__ == '__main__':
     app.run(debug=True)
 
