@@ -3,7 +3,7 @@ import database
 from forms import AddBookForm, SearchBooksForm
 import os
 
-app = Flask(__name__)  # Corrected name variable
+app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -37,11 +37,11 @@ def search_results():
         query = form.query.data
         publication_year = form.publication_year.data
         language = form.language.data
-        print("Form Query:", query) # Added print statement
+        print("Form Query:", query)
         books = database.search_books(query, publication_year, language)
         return render_template('search_results.html', books=books, form=form)
     else:
-        return render_template('search_results.html', books=[], form=form)
+        return render_template('search_books.html', form=form) # Re-render search_books.html if form is invalid
+
 if __name__ == '__main__':
     app.run(debug=True)
-
