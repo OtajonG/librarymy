@@ -11,15 +11,15 @@ def close_db(conn):
     """Closes the database connection."""
     conn.close()
 
-def add_book(isbn, title, language, author):
+def add_book(isbn, title, author, language, publication_year):
     """Adds a new book to the database."""
     conn = connect_db()
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO Books (ISBN, Title, Language, Author)
-            VALUES (?, ?, ?, ?)
-        ''', (isbn, title, language, author))
+            INSERT INTO Books (ISBN, Title, Author, Language, PublicationYear)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (isbn, title, author, language, publication_year))
         conn.commit()
         print("Book added successfully!")
     except sqlite3.IntegrityError:
@@ -27,58 +27,4 @@ def add_book(isbn, title, language, author):
     finally:
         close_db(conn)
 
-def get_book(isbn):
-    """Retrieves a book from the database by ISBN."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT * FROM Books WHERE ISBN = ?
-    ''', (isbn,))
-    book = cursor.fetchone()
-    close_db(conn)
-    return book
-
-def get_all_books():
-    """Retrieves all books from the database."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT * FROM Books
-    ''')
-    books = cursor.fetchall()
-    close_db(conn)
-    return books
-
-def update_book(isbn, title, language, author):
-    """Updates a book's information in the database."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        UPDATE Books
-        SET Title = ?, Language = ?, Author = ?
-        WHERE ISBN = ?
-    ''', (title, language, author, isbn))
-    conn.commit()
-    close_db(conn)
-    print("Book updated successfully!")
-
-def delete_book(isbn):
-    """Deletes a book from the database."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        DELETE FROM Books WHERE ISBN = ?
-    ''', (isbn,))
-    conn.commit()
-    close_db(conn)
-    print("Book deleted successfully!")
-
-def search_books(query):
-    """Searches books by title or author."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    query = "%" + query + "%"
-    cursor.execute("SELECT * FROM Books WHERE Title LIKE ? OR Author LIKE ?", (query, query))
-    books = cursor.fetchall()
-    close_db(conn)
-    return books
+# ... (other functions) ...

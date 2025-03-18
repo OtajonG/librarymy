@@ -1,31 +1,35 @@
-import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
+import database
+from forms import AddBookForm, SearchBooksForm
+import os
 
-DATABASE_FILE = 'librarymy_db.db'
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(24)
 
-def connect_db():
-    """Connects to the library database."""
-    conn = sqlite3.connect(DATABASE_FILE)
-    return conn
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
 
-def close_db(conn):
-    """Closes the database connection."""
-    conn.close()
+@app.route('/add_book', methods=['GET', 'POST'])
+def add_book():
+    form = AddBookForm()
+    if form.validate_on_submit():
+        database.add_book(form.isbn.data, form.title.data, form.author.data, form.language.data, form.publication_year.data)  # Corrected function call
+        return redirect(url_for('index'))
+    return render_template('add_book.html', form=form)
 
-def add_book(isbn, title, author, publisher): # Corrected to accept publisher
-    """Adds a new book to the database."""
-    conn = connect_db()
-    cursor = conn.cursor()
-    try:
-        cursor.execute('''
-            INSERT INTO Books (ISBN, Title, Author, Publisher)
-            VALUES (?, ?, ?, ?)
-        ''', (isbn, title, author, publisher))
-        conn.commit()
-        print("Book added successfully!")
-    except sqlite3.IntegrityError:
-        print("Error: Book with ISBN {} already exists.".format(isbn))
-    finally:
-        close_db(conn)
+@app.route('/search_books', methods=['GET', 'POST'])
+def search_books():
+    form = SearchBooksForm()
+    return render_template('search_books.html', form=form)
 
-# ... (other functions) ...
+@app.route('/search_results', methods=['GET', 'POST'])
+def search_results():
+    form = SearchBooksForm()
+    query = request.args.get('query')
+    books = database.search_books(query)
+    return render_template('search_results.html', books=books, form=form)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
