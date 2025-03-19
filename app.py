@@ -3,7 +3,7 @@ import database
 from forms import AddBookForm, SearchBooksForm
 import os
 
-app = Flask(__name__)
+app = Flask(__name__)  # Fix here
 app.config['SECRET_KEY'] = os.urandom(24)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -39,9 +39,10 @@ def search_results():
         language = form.language.data
         print("Form Query:", query)
         books = database.search_books(query, publication_year, language)
+        print("Books found:", books)  # Debugging
         return render_template('search_results.html', books=books, form=form)
     else:
-        return render_template('search_books.html', form=form) # Re-render search_books.html if form is invalid
+        return render_template('search_books.html', form=form)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # Fix here
     app.run(debug=True)

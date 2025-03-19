@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search Results</title>
+  </head>
+  <body>
+    <h1>Search Results</h1>
+    <form method="GET" action="/search_results">
+      {{ form.hidden_tag() }} {{ form.query.label }} {{ form.query() }}<br /><br />
+      {{ form.submit() }}
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+      />
+    </form>
+    {% if books %}
+    <ul>
+      {% for book in books %}
+      <li>{{ book.Title }} by {{ book.Author }} (ISBN: {{ book.ISBN }})</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No books found.</p>
+    {% endif %}
+    <br />
+    <a href="/search_books">Search Again</a><br />
+    <a href="/">Home</a>
+  </body>
+</html>

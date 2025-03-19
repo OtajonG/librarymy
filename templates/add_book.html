@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Book</title>
+  </head>
+  <body>
+    <h1>Add a New Book</h1>
+    <form method="POST" action="/add_book">
+      {{ form.hidden_tag() }} {{ form.isbn.label }} {{ form.isbn() }}<br />
+      {{ form.title.label }} {{ form.title() }}<br />
+      {{ form.author.label }} {{ form.author() }}<br />
+      {{ form.publisher.label }} {{ form.publisher() }}<br /><br />
+      {{ form.submit() }}
+      <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+      />
+    </form>
+    <br />
+    <a href="/">Home</a>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Books{% endblock %}
+
+{% block content %}
+    <h1>Search Books</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.query.label }} {{ form.query() }}
+            {% if form.query.errors %}
+                <ul class="errors">
+                    {% for error in form.query.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </p>
+        <p>
+            {{ form.language.label }} {{ form.language() }}
+            {% if form.language.errors %}
+                <ul class="errors">
+                    {% for error in form.language.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </p>
+        <p>
+            {{ form.publication_year.label }} {{ form.publication_year() }}
+            {% if form.publication_year.errors %}
+                <ul class="errors">
+                    {% for error in form.publication_year.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
