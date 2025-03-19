@@ -2,16 +2,16 @@
 <html>
   <head>
     <title>Search Results</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
     <h1>Search Results</h1>
     <form method="GET" action="/search_results">
       {{ form.hidden_tag() }} {{ form.query.label }} {{ form.query() }}<br /><br />
       {{ form.submit() }}
-      <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-      />
     </form>
     {% if books %}
     <ul>

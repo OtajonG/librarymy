@@ -2,14 +2,14 @@
 <html>
   <head>
     <title>University Library</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
     <h1>Welcome to the University Library</h1>
     <a href="/add_book">Add Book</a><br />
     <a href="/search_books">Search Books</a>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
   </body>
 </html>
