@@ -1,21 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Book</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
     <h1>Add a New Book</h1>
-    <form method="POST" action="/add_book">
-      {{ form.hidden_tag() }} {{ form.isbn.label }} {{ form.isbn() }}<br />
-      {{ form.title.label }} {{ form.title() }}<br />
-      {{ form.author.label }} {{ form.author() }}<br />
+
+    <form
+      method="POST"
+      action="{{ url_for('add_book') }}"
+      enctype="multipart/form-data"
+    >
+      {{ form.hidden_tag() }}
+
+      <label for="isbn">{{ form.isbn.label }}</label>
+      {{ form.isbn() }} <br />
+
+      <label for="title">{{ form.title.label }}</label>
+      {{ form.title() }} <br />
+
+      <label for="author">{{ form.author.label }}</label>
+      {{ form.author() }} <br />
+
+      <!-- PDF Upload Field -->
+      <label for="pdf_file">Upload PDF:</label>
+      <input type="file" name="pdf_file" accept=".pdf" /><br />
+
       {{ form.submit() }}
-      <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-      />
     </form>
+
     <br />
-    <a href="/">Home</a>
+    <a href="{{ url_for('index') }}">Home</a>
   </body>
 </html>

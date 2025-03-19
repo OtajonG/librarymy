@@ -1,54 +1,80 @@
-from database import add_book, get_book, get_all_books, update_book, delete_book, search_books
+from librarymy_db import add_book, get_book, get_all_books, update_book, delete_book, search_books
 
-# Add test data
-add_book("978-0345391803", "The Hitchhiker's Guide", "English", "Douglas Adams", None)
-add_book("978-1234567890", "Python Crash Course", "English", "Eric Matthes", 2019)
-add_book("978-0987654321", "Learning SQL", "English", "Alan Beaulieu", 2020)
-add_book("978-1122334455", "Data Science for Dummies", "English", "Lillian Pierson", 2017)
+def run_tests():
+    print("\n=== Running Database Tests ===")
 
-# Test Read (get_book)
-print("\n--- Test Read (get_book) ---")
-book = get_book("978-0345391803")
-print("Book by ISBN:", book)
+    # Add test data
+    print("\n--- Adding Test Books ---")
+    try:
+        add_book("978-0345391803", "The Hitchhiker's Guide", "Douglas Adams", "English", None)
+        add_book("978-1234567890", "Python Crash Course", "Eric Matthes", "English", 2019)
+        add_book("978-0987654321", "Learning SQL", "Alan Beaulieu", "English", 2020)
+        add_book("978-1122334455", "Data Science for Dummies", "Lillian Pierson", "English", 2017)
+        print("Books added successfully!")
+    except Exception as e:
+        print("Error adding books:", e)
 
-# Test Read (get_all_books)
-print("\n--- Test Read (get_all_books) ---")
-all_books = get_all_books()
-print("All books:", all_books)
+    # Test Read (get_book)
+    print("\n--- Test Read (get_book) ---")
+    try:
+        book = get_book("978-0345391803")
+        print("Book found:", book)
+    except Exception as e:
+        print("Error fetching book:", e)
 
-# Test Update
-print("\n--- Test Update ---")
-update_book("978-0345391803", "The Hitchhiker's Guide Updated", "English", "Douglas Adams", None)
-print("Book updated successfully!")
+    # Test Read (get_all_books)
+    print("\n--- Test Read (get_all_books) ---")
+    try:
+        all_books = get_all_books()
+        print(f"Total books found: {len(all_books)}")
+        for book in all_books:
+            print(book)
+    except Exception as e:
+        print("Error fetching all books:", e)
 
-# Test Delete (Uncomment to test)
-# print("\n--- Test Delete ---")
-# delete_book("978-0345391803")
-# print("Book deleted successfully!")
+    # Test Update
+    print("\n--- Test Update ---")
+    try:
+        update_book("978-0345391803", "The Hitchhiker's Guide (Updated)", "Douglas Adams", "English", None)
+        print("Book updated successfully!")
+        print("Updated Book:", get_book("978-0345391803"))
+    except Exception as e:
+        print("Error updating book:", e)
 
-# Search books tests
-print("\n--- Search Books Tests ---")
+    # Test Delete (Uncomment to enable deletion test)
+    # print("\n--- Test Delete ---")
+    # try:
+    #     delete_book("978-0345391803")
+    #     print("Book deleted successfully!")
+    # except Exception as e:
+    #     print("Error deleting book:", e)
 
-# Exact matches:
-print("Search for 'The Hitchhiker's Guide':", search_books("The Hitchhiker's Guide"))
-print("Search for 'Douglas Adams':", search_books("Douglas Adams"))
+    # Test Search Functionality
+    print("\n--- Search Books Tests ---")
+    search_queries = [
+        "The Hitchhiker's Guide",
+        "Douglas Adams",
+        "Hitch",
+        "Adam",
+        "Python",
+        "SQL",
+        "Data",
+        "douglas adams",  # Case insensitive test
+        "Nonexistent Book",  # Should return no results
+        "Random Author"
+    ]
 
-# Partial matches:
-print("Search for 'Hitch':", search_books("Hitch"))
-print("Search for 'Adam':", search_books("Adam"))
-print("Search for 'Python':", search_books("Python"))
-print("Search for 'SQL':", search_books("SQL"))
-print("Search for 'Data':", search_books("Data"))
+    for query in search_queries:
+        try:
+            results = search_books(query)
+            print(f"\nSearch for '{query}': Found {len(results)} result(s).")
+            for book in results:
+                print(book)
+        except Exception as e:
+            print(f"Error searching for '{query}':", e)
 
-# Case-insensitive matches:
-print("Search for 'douglas adams':", search_books("douglas adams"))
+    print("\n=== Database Tests Completed ===")
 
-# No matches:
-print("Search for 'Nonexistent Book':", search_books("Nonexistent Book"))
-print("Search for 'Random Author':", search_books("Random Author"))
-
-# Print all books
-print("\n--- All Books ---")
-all_books = get_all_books()
-for book in all_books:
-    print(book)
+# Run the test script
+if __name__ == "__main__":
+    run_tests()

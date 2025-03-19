@@ -1,48 +1,48 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-import database
+import database  # Ensure this handles database operations correctly
 from forms import AddBookForm, SearchBooksForm
 import os
 
-app = Flask(__name__)  # Fix here
+app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
+@app.route("/")
+def home():
+    return "Flask is running!"
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html')
+# Define the folder to store uploaded PDFs
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure the upload directory exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
 
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
     form = AddBookForm()
     if form.validate_on_submit():
+        pdf_file = request.files.get('pdf_file')  # Get the uploaded file
+
+        # Save the file if uploaded
+        pdf_path = None
+        if pdf_file and pdf_file.filename.endswith('.pdf'):
+            filename = os.path.join(app.config['UPLOAD_FOLDER'], pdf_file.filename)
+            pdf_file.save(filename)
+            pdf_path = filename  # Store the path in the database
+
+        # Save book details in the database
         database.add_book(
             form.isbn.data,
             form.title.data,
             form.author.data,
             form.language.data,
-            form.publication_year.data
+            form.publication_year.data,
+            pdf_path  # Store the PDF path
         )
         flash('Book added successfully!', 'success')
         return redirect(url_for('index'))
+
     return render_template('add_book.html', form=form)
-
-@app.route('/search_books', methods=['GET', 'POST'])
-def search_books():
-    form = SearchBooksForm()
-    return render_template('search_books.html', form=form)
-
-@app.route('/search_results', methods=['GET', 'POST'])
-def search_results():
-    form = SearchBooksForm()
-    if form.validate_on_submit():
-        query = form.query.data
-        publication_year = form.publication_year.data
-        language = form.language.data
-        print("Form Query:", query)
-        books = database.search_books(query, publication_year, language)
-        print("Books found:", books)  # Debugging
-        return render_template('search_results.html', books=books, form=form)
-    else:
-        return render_template('search_books.html', form=form)
-
-if __name__ == '__main__':  # Fix here
+if __name__ == "__main__":
     app.run(debug=True)
