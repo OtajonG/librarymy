@@ -3,7 +3,7 @@ import database  # Ensure this handles database operations correctly
 from forms import AddBookForm, SearchBooksForm
 import os
 
-app = Flask(name)
+app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
 
 
