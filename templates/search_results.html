@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% block title %}Search Results{% endblock %} {% block
+content %}
+<h1>Search Results</h1>
+
+<form method="POST" action="{{ url_for('search_books') }}">
+  {{ form.hidden_tag() }}
+  <label for="query">{{ form.query.label }}</label>
+  {{ form.query(size=30) }}
+  <br /><br />
+  <label for="language">{{ form.language.label }}</label>
+  {{ form.language() }}
+  <br /><br />
+  <label for="publication_year">{{ form.publication_year.label }}</label>
+  {{ form.publication_year() }}
+  <br /><br />
+  {{ form.submit() }}
+</form>
+
+{% if books %}
+<ul>
+  {% for book in books %}
+  <li>
+    {{ book.Title }} by {{ book.Author }} (ISBN: {{ book.ISBN }}) {% if
+    book.pdf_path %} -
+    <a href="{{ url_for('static', filename=book.pdf_path) }}" target="_blank"
+      >View PDF</a
+    >
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No books found.</p>
+{% endif %}
+
+<br />
+<a href="{{ url_for('search_books') }}">Search Again</a><br />
+<a href="{{ url_for('index') }}">Home</a>
+{% endblock %}

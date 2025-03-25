@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Book</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Add a New Book</h1>
+
+    <form
+      method="POST"
+      action="{{ url_for('add_book') }}"
+      enctype="multipart/form-data"
+    >
+      {{ form.hidden_tag() }}
+
+      <label for="isbn">{{ form.isbn.label }}</label>
+      {{ form.isbn(id="isbn") }} <br />
+      {% if form.isbn.errors %}
+      <ul class="errors">
+        {% for error in form.isbn.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <label for="title">{{ form.title.label }}</label>
+      {{ form.title(id="title") }} <br />
+      {% if form.title.errors %}
+      <ul class="errors">
+        {% for error in form.title.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <label for="author">{{ form.author.label }}</label>
+      {{ form.author(id="author") }} <br />
+      {% if form.author.errors %}
+      <ul class="errors">
+        {% for error in form.author.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <label for="language">{{ form.language.label }}</label>
+      {{ form.language(id="language") }} <br />
+      {% if form.language.errors %}
+      <ul class="errors">
+        {% for error in form.language.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <label for="publication_year">{{ form.publication_year.label }}</label>
+      {{ form.publication_year(id="publication_year") }} <br />
+      {% if form.publication_year.errors %}
+      <ul class="errors">
+        {% for error in form.publication_year.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <label for="pdf_path">Upload PDF File:</label>
+      <input type="file" name="pdf_path" accept=".pdf" id="pdf_path" /><br />
+      {% if form.pdf_path.errors %}
+      <ul class="errors">
+        {% for error in form.pdf_path.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %} {{ form.submit() }}
+    </form>
+
+    <br />
+    <a href="{{ url_for('index') }}">Home</a>
+  </body>
+</html>
