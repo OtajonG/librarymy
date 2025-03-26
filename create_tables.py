@@ -2,7 +2,9 @@ import sqlite3
 import os
 
 # Define database path dynamically
-script_dir = os.path.dirname(os.path.abspath(file)) #get the absolute directory of the script
+script_dir = os.path.dirname(
+    os.path.abspath(__file__)
+)  # get the absolute directory of the script
 DATABASE_FILE = os.path.join(script_dir, "librarymy_db.db")
 
 try:
@@ -11,7 +13,8 @@ try:
     cursor = conn.cursor()
 
     # Create Books table with a PdfPath column
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS Books (
             ISBN TEXT PRIMARY KEY,
             Title TEXT NOT NULL,
@@ -20,20 +23,24 @@ try:
             PublicationYear INTEGER,
             PdfPath TEXT  -- Column to store PDF file path
         )
-    """)
+    """
+    )
 
     # Create Members table
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS Members (
             MemberID INTEGER PRIMARY KEY AUTOINCREMENT,
             Name TEXT NOT NULL,
             Address TEXT,
             Phone TEXT
         )
-    """)
+    """
+    )
 
     # Create Loans table
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS Loans (
             LoanID INTEGER PRIMARY KEY AUTOINCREMENT,
             MemberID INTEGER NOT NULL,
@@ -43,7 +50,8 @@ try:
             FOREIGN KEY (MemberID) REFERENCES Members(MemberID),
             FOREIGN KEY (ISBN) REFERENCES Books(ISBN)
         )
-    """)
+    """
+    )
 
     # Commit the changes
     conn.commit()
