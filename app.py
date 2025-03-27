@@ -56,15 +56,7 @@ def search_books():
         # Perform database search based on form data
         books = database.search_books(query, language, publication_year)
 
-
-# ... (Flask route)
-
-books = database.search_books(query, language, publication_year)
-
-print("Books:", books)  # Add this line to debug
-
-
-return render_template("search_books.html", form=form, books=books)
+        return render_template("search_books.html", form=form, books=books)
 
 
 if __name__ == "__main__":
