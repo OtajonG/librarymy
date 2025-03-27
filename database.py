@@ -53,6 +53,20 @@ def search_books(query, publication_year=None, language=None):
         return [dict(book) for book in books]
 
 
+def connect_db():
+    try:
+        print("Connecting to database...")  # Add this line to debug
+        conn = sqlite3.connect(
+            "librarymy_db.db"
+        )  # Replace with your actual database file
+        conn.row_factory = sqlite3.Row
+        print("Database connection successful!")  # Add this line to debug
+        return conn
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
+
+
 def get_all_books():
     """Retrieves all books from the database."""
     with connect_db() as conn:
