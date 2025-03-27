@@ -30,39 +30,26 @@ def add_book(isbn, title, author, language, publication_year, pdf_path=None):
 
 
 def search_books(query, publication_year=None, language=None):
-    """Searches for books matching the query."""
-    with connect_db() as conn:
-        cursor = conn.cursor()
+    sql = "SELECT * FROM Books WHERE (Title LIKE ? OR Author LIKE ?)"  # Initialize sql with a default query
+    params = ["%" + query + "%", "%" + query + "%"]
 
-        sql = "SELECT * FROM Books WHERE (Title LIKE ? OR Author LIKE ?)"
-        params = ["%" + query + "%", "%" + query + "%"]
+    if publication_year:
+        sql += " AND PublicationYear = ?"
+        params.append(publication_year)
 
-        if publication_year:
-            sql += " AND PublicationYear = ?"
-            params.append(publication_year)
-
-        if language:
-            sql += " AND Language = ?"
-            params.append(language)
-
-        print("🔍 SQL Query:", sql)
-        print("📌 Parameters:", params)
-
-        cursor.execute(sql, params)
-        books = cursor.fetchall()
-        return [dict(book) for book in books]
-
-
-def search_books(query, publication_year=None, language=None):
-    # ... (rest of the code)
+    if language:
+        sql += " AND Language = ?"
+        params.append(language)
 
     print("SQL Query:", sql)
     print("Parameters:", params)
 
-    cursor.execute(sql, params)
-    books = cursor.fetchall()
+    with connect_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute(sql, params)
+        books = cursor.fetchall()
 
-    print("Query Results:", books)  # Add this line to debug
+    print("Query Results:", books)
 
     return [dict(book) for book in books]
 
