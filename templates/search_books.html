@@ -42,7 +42,9 @@ content %}
   <li>
     {{ book.Title }} by {{ book.Author }} ({{ book.PublicationYear }}) {% if
     book.pdf_path %} -
-    <a href="{{ url_for('static', filename=book.pdf_path) }}" target="_blank"
+    <a
+      href="{{ url_for('static', filename= 'uploads/'+ book.pdf_path) }}"
+      target="_blank"
       >View PDF</a
     >
     {% endif %}
