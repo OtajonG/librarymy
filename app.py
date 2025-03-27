@@ -54,9 +54,17 @@ def search_books():
         publication_year = form.publication_year.data
 
         # Perform database search based on form data
-        books = database.search_books(query, language, publication_year)
+        books = database.search_books(
+            query, language, publication_year
+        )  # Pass the language parameter
 
-        return render_template("search_books.html", form=form, books=books)
+        return render_template(
+            "search_books.html", form=form, books=books
+        )  # Return when form is valid
+
+    return render_template(
+        "search_books.html", form=form
+    )  # Return when form is not valid
 
 
 if __name__ == "__main__":
