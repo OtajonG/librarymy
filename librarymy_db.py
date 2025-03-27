@@ -141,19 +141,20 @@ cursor.execute("DELETE FROM Books WHERE ISBN = ?", (isbn,))
             print(f"Database error: {e}")
 
 
-def search_books(query):
-    """Search for books by title, author, or language."""
+def search_books(query, publication_year=None): # Add publication_year parameter
+    """Search for books by title, author, language, or publication year."""
     with connect_db() as conn:
         cursor = conn.cursor()
 
         query = f"%{query}%"  # Prepare for SQL LIKE search
-        cursor.execute(
-            """
-            SELECT * FROM Books 
-            WHERE Title LIKE ? OR Author LIKE ? OR Language LIKE ?
-            """,
-            (query, query, query),
-        )
+        sql = "SELECT * FROM Books WHERE Title LIKE ? OR Author LIKE ? OR Language LIKE ?"
+        params = [query, query, query]
 
+        if publication_year:  # Add this block to include publication year
+            sql += " AND PublicationYear = ?"
+            params.append(publication_year)
+
+        cursor.execute(sql, params)
         books = cursor.fetchall()
-        return [dict(book) for book in books]   #text
+
+        return [dict(book) for book in books]
