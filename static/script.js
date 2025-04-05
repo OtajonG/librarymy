@@ -12,7 +12,7 @@ function loadPDFs() {
             "list-group-item d-flex justify-content-between align-items-center";
   
           let link = document.createElement("a");
-          link.href = "/uploads/" + pdf;
+          link.href = "{{url_for('static', filename = 'uploads/')}}" + pdf;
           link.textContent = pdf;
           link.target = "_blank";
           link.className = "text-decoration-none";
