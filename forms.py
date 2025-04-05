@@ -17,9 +17,9 @@ class AddBookForm(FlaskForm):
     author = StringField("Author", validators=[DataRequired(), Length(max=100)])
     language = StringField("Language", validators=[Optional(), Length(max=50)])
     publication_year = IntegerField("Publication Year", validators=[Optional()])
-    pdf_file = FileField(
+    pdf_path = FileField(  # Changed back to pdf_path to match your database
         "Upload PDF", validators=[Optional(), validate_pdf]
-    )  # Changed name to pdf_file to match app.py
+    )
     submit = SubmitField("Add Book")
 
 

@@ -20,15 +20,21 @@ def index():
 
 @app.route("/add_book", methods=["GET", "POST"])
 def add_book():
+    UPLOAD_FOLDER = "static/uploads"
+    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
     form = AddBookForm()
     if form.validate_on_submit():
-        pdf_file = request.files.get("pdf_file")
+        pdf_file = form.pdf_path.data  # Accessing the file using form.pdf_path
 
         pdf_path = None
         if pdf_file and pdf_file.filename.endswith(".pdf"):
             filename = os.path.join(app.config["UPLOAD_FOLDER"], pdf_file.filename)
             pdf_file.save(filename)
-            pdf_path = os.path.relpath(filename, "static")  # Store relative path
+            pdf_path = os.path.relpath(filename, "static")
 
         database.add_book(
             form.isbn.data,
