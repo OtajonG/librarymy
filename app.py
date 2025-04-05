@@ -1,10 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import database  # Ensure this handles database operations correctly
 from forms import AddBookForm, SearchBooksForm
 import os
+import fitz  # PyMuPDF for PDF processing
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
+UPLOAD_FOLDER = "static/uploads"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 @app.route("/")
@@ -14,12 +20,6 @@ def index():
 
 @app.route("/add_book", methods=["GET", "POST"])
 def add_book():
-    UPLOAD_FOLDER = "static/uploads"
-    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-
     form = AddBookForm()
     if form.validate_on_submit():
         pdf_file = request.files.get("pdf_file")
@@ -28,7 +28,7 @@ def add_book():
         if pdf_file and pdf_file.filename.endswith(".pdf"):
             filename = os.path.join(app.config["UPLOAD_FOLDER"], pdf_file.filename)
             pdf_file.save(filename)
-            pdf_path = filename
+            pdf_path = os.path.relpath(filename, "static")  # Store relative path
 
         database.add_book(
             form.isbn.data,
@@ -44,27 +44,39 @@ def add_book():
     return render_template("add_book.html", form=form)
 
 
-@app.route("/search_books", methods=["GET", "POST"])
+@app.route("/search_books")
 def search_books():
-    form = SearchBooksForm()
-    books = []  # Initialize books list
-    if form.validate_on_submit():
-        query = form.query.data
-        language = form.language.data
-        publication_year = form.publication_year.data
+    return render_template("search_books.html")
 
-        # Perform database search based on form data
-        books = database.search_books(
-            query, language, publication_year
-        )  # Pass the language parameter
 
-        return render_template(
-            "search_books.html", form=form, books=books
-        )  # Return when form is valid
+@app.route("/list_pdfs")
+def list_pdfs():
+    """Returns a JSON list of all PDF filenames in the upload folder."""
+    pdfs = [f for f in os.listdir(app.config["UPLOAD_FOLDER"]) if f.endswith(".pdf")]
+    return jsonify(pdfs)
 
-    return render_template(
-        "search_books.html", form=form
-    )  # Return when form is not valid
+
+@app.route("/search_pdf_text", methods=["POST"])
+def search_pdf_text():
+    """Searches the content of all uploaded PDFs for a given query."""
+    data = request.get_json()
+    query = data.get("query", "").lower()
+    matching_pdfs = []
+
+    for filename in os.listdir(app.config["UPLOAD_FOLDER"]):
+        if filename.endswith(".pdf"):
+            pdf_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            try:
+                with fitz.open(pdf_path) as doc:
+                    for page in doc:
+                        text = page.get_text().lower()
+                        if query in text:
+                            matching_pdfs.append(filename)
+                            break  # Found in this PDF, move to the next
+            except Exception as e:
+                print(f"Error reading PDF {filename}: {e}")
+
+    return jsonify(matching_pdfs)
 
 
 if __name__ == "__main__":

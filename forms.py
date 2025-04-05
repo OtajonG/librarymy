@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, FileField
+from wtforms import StringField, SubmitField, IntegerField, FileField, SelectField
 from wtforms.validators import DataRequired, Optional, Length, ValidationError
 import os
 
@@ -17,9 +17,9 @@ class AddBookForm(FlaskForm):
     author = StringField("Author", validators=[DataRequired(), Length(max=100)])
     language = StringField("Language", validators=[Optional(), Length(max=50)])
     publication_year = IntegerField("Publication Year", validators=[Optional()])
-    pdf_path = FileField(
+    pdf_file = FileField(
         "Upload PDF", validators=[Optional(), validate_pdf]
-    )  # Renamed and added validator
+    )  # Changed name to pdf_file to match app.py
     submit = SubmitField("Add Book")
 
 

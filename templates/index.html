@@ -1,10 +1,22 @@
 <html lang="en">
   {% extends 'base.html' %} {% block title %}University Library{% endblock %} {%
   block content %}
-  <h1>Welcome to the University Library</h1>
-  <p>Explore our extensive collection of books and resources.</p>
-  <a href="{{ url_for('add_book') }}">Add Book</a
-  ><br />
-  <a href="{{ url_for('search_books') }}">Search Books</a>
+  <div class="container mt-5">
+    <div class="jumbotron">
+      <h1 class="display-4">Welcome to the University Library</h1>
+      <p class="lead">
+        Explore our extensive collection of books and resources.
+      </p>
+      <hr class="my-4" />
+      <p>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('add_book') }}"
+          >Add Book</a
+        >
+        <a class="btn btn-info btn-lg" href="{{ url_for('search_books') }}"
+          >Search Books & PDFs</a
+        >
+      </p>
+    </div>
+  </div>
   {% endblock %}
 </html>

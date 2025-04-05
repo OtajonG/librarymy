@@ -21,7 +21,7 @@ def add_book(isbn, title, author, language, publication_year, pdf_path=None):
                 INSERT INTO Books (ISBN, Title, Author, Language, PublicationYear, pdf_path)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
-                (isbn, title, author, language, publication_year, pdf_path),
+                (isbn, title, author, language, publication_year, os.path.basename(pdf_path) if pdf_path else None),
             )
             conn.commit()
             print("✅ Book added successfully!")
@@ -29,17 +29,18 @@ def add_book(isbn, title, author, language, publication_year, pdf_path=None):
             print(f"❌ Error: Book with ISBN {isbn} already exists.")
 
 
-def search_books(query, publication_year=None, language=None):
-    sql = "SELECT * FROM Books WHERE (Title LIKE ? OR Author LIKE ?)"  # Initialize sql with a default query
+def search_books(query, language=None, publication_year=None):
+    """Searches for books based on a query and optional filters."""
+    sql = "SELECT * FROM Books WHERE (Title LIKE ? OR Author LIKE ?)"
     params = ["%" + query + "%", "%" + query + "%"]
-
-    if publication_year:
-        sql += " AND PublicationYear = ?"
-        params.append(publication_year)
 
     if language:
         sql += " AND Language = ?"
         params.append(language)
+
+    if publication_year:
+        sql += " AND PublicationYear = ?"
+        params.append(publication_year)
 
     print("SQL Query:", sql)
     print("Parameters:", params)
@@ -58,7 +59,7 @@ def get_all_books():
     """Retrieves all books from the database."""
     with connect_db() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Books")
+        cursor.execute("SELECT ISBN, Title, Author, Language, PublicationYear, pdf_path FROM Books")
         books = cursor.fetchall()
         return [dict(book) for book in books]
 
@@ -81,3 +82,7 @@ def create_books_table():
         )
         conn.commit()
         print("📚 Books table created successfully!")
+
+
+if __name__ == "__main__":
+    create_books_table()
