@@ -28,6 +28,9 @@
 
     <ul id="bookList" class="list-group"></ul>
   </div>
+  <script>
+    const uploadsBaseURL = "{{ url_for('static', filename='script.js') }}";
+  </script>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
   {% endblock %}
