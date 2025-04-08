@@ -17,6 +17,12 @@
         >
       </p>
     </div>
+
+    <script>
+      const uploadsBaseUrl = "{{ url_for('static', filename='uploads/') }}";
+    </script>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </div>
   {% endblock %}
 </html>

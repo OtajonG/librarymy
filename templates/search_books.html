@@ -28,10 +28,10 @@
 
     <ul id="bookList" class="list-group"></ul>
   </div>
-  <script>
-    const uploadsBaseURL = "{{ url_for('static', filename='script.js') }}";
-  </script>
 
+  <script>
+    const uploadsBaseUrl = "{{ url_for('static', filename='uploads/') }}";
+  </script>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
   {% endblock %}
 </html>
